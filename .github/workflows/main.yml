@@ -22,4 +22,6 @@ jobs:
         distribution: 'adopt'
         java-version: '11'
 
+    - name: Maven Clean and Install
+      run: mvn clean install
 
