@@ -1,0 +1,14 @@
+name: k8s deployment on hpinc namespace
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: checkout hpinc repo main branch
+      uses: actions/checkout@v4
+      
+    
