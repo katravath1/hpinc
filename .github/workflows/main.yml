@@ -25,3 +25,9 @@ jobs:
     - name: Maven Clean and Install
       run: mvn clean install
 
+    - name: Maven Test
+      run: mvn test
+
+    - name: Checkstyle Analysis
+      run: mvn checkstyle:checkstyle
+
