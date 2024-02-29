@@ -2,13 +2,18 @@ name: k8s deployment on hpinc namespace
 on:
   push:
     branches:
-      - main
+    - main
 jobs:
   checkout:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: checkout hpinc repo main branch
       uses: actions/checkout@v4
-      
-    
+
+    - name: install kubectl
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install kubectl -y
+
+
