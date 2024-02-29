@@ -32,7 +32,9 @@ jobs:
       run: mvn checkstyle:checkstyle
 
   build:
+    needs: checkout
     runs-on: ubuntu-latest
+
 
 
     steps:
