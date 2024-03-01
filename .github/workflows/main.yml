@@ -50,9 +50,8 @@ jobs:
         aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws configure set default.region ${{ secrets.AWS_REGION }}
 
-    - name: Login to AWS ECR and push
-      run: |
-        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 619940455000.dkr.ecr.us-east-1.amazonaws.com
+    - name: Login to AWS ECR
+      run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 619940455000.dkr.ecr.us-east-1.amazonaws.com
 
   push:
     needs: build
@@ -61,8 +60,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-
-
     - name: Build Docker image
       run: docker build -t hpinc .
 
@@ -70,12 +67,5 @@ jobs:
       run: docker tag hpinc:latest 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
 
     - name: Push Docker image to ECR
-      run: docker push 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
-      with:
-        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        repo: aws-ecr-repo
-        region: ap-northeast-2
-        tags: latest,${{ github.sha }}
-        create_repo: true
+      run: |
+        docker push 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
