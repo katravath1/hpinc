@@ -51,21 +51,10 @@ jobs:
         aws configure set default.region ${{ secrets.AWS_REGION }}
 
     - name: Login to AWS ECR
-      run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 619940455000.dkr.ecr.us-east-1.amazonaws.com
-
-  push:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Build Docker image
-      run: docker build -t hpinc .
-
-    - name: Tag Docker image for ECR
-      run: docker tag hpinc:latest 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        registry: 619940455000.dkr.ecr.us-east-1.amazonaws.com
 
     - name: Push Docker image to ECR
-      run: |
-        docker push 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
+      run: docker push 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
