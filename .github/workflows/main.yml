@@ -53,7 +53,6 @@ jobs:
 
     - run: docker build --tag rig:v1 .
     - name: Push to ECR
-      id: docker push 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
       uses: jwalton/gh-ecr-push@v1
       with:
         access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
