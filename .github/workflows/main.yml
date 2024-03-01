@@ -68,4 +68,10 @@ jobs:
         region: ap-northeast-2
         tags: latest,${{ github.sha }}
         create_repo: true
-
+    - name: Tag Docker image for ECR
+      run: |
+        docker tag hpinc:latest 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
+      
+   - name: Push Docker image to ECR
+      run: |
+        docker push 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
