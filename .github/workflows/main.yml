@@ -61,16 +61,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Build and Upload to ECS
-      uses: vitr/actions-build-and-upload-to-ecs@master
-      with:
-        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        repo: aws-ecr-repo
-        region: ap-northeast-2
-        tags: latest,${{ github.sha }}
-        create_repo: true
+
 
     - name: Build Docker image
       run: docker build -t hpinc .
@@ -80,3 +71,11 @@ jobs:
 
     - name: Push Docker image to ECR
       run: docker push 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
+      with:
+        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        repo: aws-ecr-repo
+        region: ap-northeast-2
+        tags: latest,${{ github.sha }}
+        create_repo: true
