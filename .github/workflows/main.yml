@@ -59,6 +59,7 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
       with:
         registry: 619940455000.dkr.ecr.us-east-1.amazonaws.com
+        region: us-east-1
 
     - name: Push Docker image to ECR
       run: docker push 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
