@@ -33,33 +33,20 @@ jobs:
     - name: Checkstyle Analysis
       run: mvn checkstyle:checkstyle
 
-  build:
+
+
+
+  build-and-push:
     needs: checkout
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v4
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Build Docker image
-      run: docker build -t shiva .
-
-    - name: Tag Docker image for ECR
-      run: docker tag shiva:latest 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
-
-  push:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Log in to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+    - uses: actions/checkout@v2
+    - uses: vitr/actions-build-and-upload-to-ecs@master
       with:
-        registry: 619940455000.dkr.ecr.us-east-1.amazonaws.com
+        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        repo: hpinc
         region: us-east-1
-
-    - name: Push Docker image to ECR
-      run: docker push 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
+        tags: latest,${{ github.sha }}
+        create_repo: true
