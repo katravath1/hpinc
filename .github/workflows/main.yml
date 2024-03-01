@@ -53,14 +53,18 @@ jobs:
         AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
 
-    - name: Build Docker image
-      run: docker build --tag my-image:v1 .
 
-    - name: Push to ECR
-      uses: jwalton/gh-ecr-push@v1
+  push:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: vitr/actions-build-and-upload-to-ecs@master
       with:
-        access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        region: us-east-1
-        image: my-image:v1
+        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        repo: aws-ecr-repo
+        region: ap-northeast-2
+        tags: latest,${{ github.sha }}
+        create_repo: true
 
