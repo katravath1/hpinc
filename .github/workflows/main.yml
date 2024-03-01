@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: checkout hpinc repo main branch
+    - name: Checkout hpinc repo main branch
       uses: actions/checkout@v4
 
-    - name: install kubectl
+    - name: Install kubectl
       run: |
         sudo apt-get update -y
         sudo apt-get install kubectl -y
@@ -38,28 +38,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: check out repository
+    - name: Check out repository
       uses: actions/checkout@v4
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
     - name: Configure AWS
-      run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set default.region ${{ secrets.AWS_REGION }}
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set default.region ${{ secrets.AWS_REGION }}
 
     - name: Login to AWS ECR and push
-      run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 619940455000.dkr.ecr.us-east-1.amazonaws.com
-      env:
-        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-
+      run: |
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 619940455000.dkr.ecr.us-east-1.amazonaws.com
 
   push:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: vitr/actions-build-and-upload-to-ecs@master
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build and Upload to ECS
+      uses: vitr/actions-build-and-upload-to-ecs@master
       with:
         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -68,10 +71,11 @@ jobs:
         region: ap-northeast-2
         tags: latest,${{ github.sha }}
         create_repo: true
+
     - name: Tag Docker image for ECR
       run: |
         docker tag hpinc:latest 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
-      
-   - name: Push Docker image to ECR
+
+    - name: Push Docker image to ECR
       run: |
         docker push 619940455000.dkr.ecr.us-east-1.amazonaws.com/hpinc:latest
